@@ -3,8 +3,12 @@ const app = express()
 const port = 3000
 
 
-app.get('/hello-world', (req, res) => {
-    res.send('Hello World!')
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+})
+
+app.get('/api/courses', (req, res) => {
+    res.send([1,2,3]);
 })
 
 app.post('/', (req, res) => {
