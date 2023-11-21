@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 const port = process.env.PORT || 3000
 
@@ -23,31 +24,39 @@ app.get('/api/courses/:id', (req, res) =>{
     res.send(course)
 })
 
+app.post('/api/courses/', (req, res) => {
+    if (!req.body.name || req.body.name.length < 3) {
+        res.status(400).send('Name is required and should be minimum 3 characters')
+        return
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.post('/', (req, res) => {
-    res.send('Got a POST request')
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    };
+    courses.push(course)
+    res.send(course)
 })
 
-app.listen(port,() => console.log(`it's alive on http:localhost:${port}`)
-)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.put('/user', (req, res) => {
     res.send('Got a PUT request at /user')
@@ -56,3 +65,6 @@ app.put('/user', (req, res) => {
 app.delete('/user', (req, res) => {
     res.send('Got a DELETE request at /user')
 })
+
+app.listen(port,() => console.log(`it's alive on http:localhost:${port}`)
+)
