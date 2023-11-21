@@ -20,16 +20,14 @@ app.get('/api/courses', (req, res) => {
 
 app.get('/api/courses/:id', (req, res) =>{
     const course = courses.find(c => c.id === parseInt(req.params.id))
-    if (!course) res.status(404).send('The course with the given ID was not found')
+    if (!course)
+        return res.status(404).send('The course with the given ID was not found')
     res.send(course)
 })
 
 app.post('/api/courses/', (req, res) => {
-    if (!req.body.name || req.body.name.length < 3) {
-        res.status(400).send('Name is required and should be minimum 3 characters')
-        return
-    }
-
+    if (!req.body.name || req.body.name.length < 3)
+        return res.status(400).send('Name is required and should be minimum 3 characters')
 
     const course = {
         id: courses.length + 1,
@@ -39,32 +37,34 @@ app.post('/api/courses/', (req, res) => {
     res.send(course)
 })
 
+app.put('/api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id))
+    if (!course)
+        return res.status(404).send('The course with the given ID was not found')
 
+    if (!req.body.name || req.body.name.length < 3)
+        return res.status(400).send('Name is required and should be minimum 3 characters')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.put('/user', (req, res) => {
-    res.send('Got a PUT request at /user')
+    course.name = req.body.name;
+    res.send(course);
 })
 
-app.delete('/user', (req, res) => {
-    res.send('Got a DELETE request at /user')
+app.delete('/api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id))
+    if (!course)
+        return res.status(404).send('The course with the given ID was not found')
+
+    const index = courses.indexOf(course)
+    courses.splice(index, 1)
+
+    res.send(course)
 })
+
+
+
+
+
+
 
 app.listen(port,() => console.log(`it's alive on http:localhost:${port}`)
 )
