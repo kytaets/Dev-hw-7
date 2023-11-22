@@ -27,22 +27,6 @@ app.post('/products', async (req, res) => {
     res.json(newProduct);
 })
 
-app.post('/employees', async (req, res) => {
-    const {firstName, lastName, middleName, position} = req.body;
-    if (!req.body.position)
-        return res.status(403).send('Invalid employee position')
-    const newEmployee = await prisma.employees.create({
-        data: {
-            firstName,
-            lastName,
-            middleName,
-            position,
-        },
-    });
-
-    res.json(newEmployee);
-})
-
 app.patch('/employees/:id', async (req, res) => {
     const employeeId = parseInt(req.params.id);
     const {firstName, lastName, middleName, position} = req.body;
@@ -63,6 +47,74 @@ app.patch('/employees/:id', async (req, res) => {
     res.json(employee)
 
 })
+
+
+app.delete('/orders/:id', async (req, res) => {
+    const ordersId = parseInt(req.params.id);
+    if(!await prisma.orders.findUnique({where: {id: ordersId}}))
+        return res.status(404).send('Order with such id not found')
+
+    const order = await prisma.orders.delete({
+        where: { id: ordersId },
+    });
+
+    res.send(order)
+
+})
+
+app.post('/employees', async (req, res) => {
+    const {firstName, lastName, middleName, position} = req.body;
+    if (!req.body.position)
+        return res.status(403).send('Invalid employee position')
+    const newEmployee = await prisma.employees.create({
+        data: {
+            firstName,
+            lastName,
+            middleName,
+            position,
+        },
+    });
+
+    res.json(newEmployee);
+})
+
+app.post('/customers', async (req, res) => {
+    const {firstName, lastName, middleName, email, birthDate} = req.body;
+
+    const newCustomer = await prisma.customers.create({
+        data: {
+            firstName,
+            lastName,
+            middleName,
+            email,
+            birthDate,
+        },
+    });
+
+    res.json(newCustomer);
+})
+
+app.post('/orders', async (req, res) => {
+    const {employeeId, customerId, orderAddress, deliveryCost, orderDate} = req.body;
+
+    const parsedOrderDate = new Date(orderDate);
+    if (isNaN(parsedOrderDate.getTime())) {
+        return res.status(400).json({ error: 'Invalid orderDate format. Use ISO-8601 DateTime.' });
+    }
+
+    const newOrder = await prisma.orders.create({
+        data: {
+            employeeId,
+            customerId,
+            orderAddress,
+            deliveryCost,
+            orderDate: new Date(orderDate),
+        },
+    });
+
+    res.send(newOrder);
+})
+
 
 
 

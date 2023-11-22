@@ -8,7 +8,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,7 +17,7 @@ model Products {
   name     String @unique
   category String
   amount   Int    @unique @default(0)
-  price    Int    @default(0)
+  price    Float  @default(0)
 
   order            Orders[]
   OrdersOfProducts OrdersOfProducts[]
@@ -46,10 +46,10 @@ model Employees {
 
 model Orders {
   id           Int      @id @default(autoincrement())
-  employeeId   Int      @unique
-  customerId   Int      @unique
+  employeeId   Int
+  customerId   Int
   orderAddress String
-  deliveryCost Int
+  deliveryCost Float
   orderDate    DateTime @default(now())
 
   product          Products[]
