@@ -48,7 +48,6 @@ app.patch('/employees/:id', async (req, res) => {
 
 })
 
-
 app.delete('/orders/:id', async (req, res) => {
     const ordersId = parseInt(req.params.id);
     if(!await prisma.orders.findUnique({where: {id: ordersId}}))
@@ -61,6 +60,14 @@ app.delete('/orders/:id', async (req, res) => {
     res.send(order)
 
 })
+
+
+
+
+
+
+
+
 
 app.post('/employees', async (req, res) => {
     const {firstName, lastName, middleName, position} = req.body;
@@ -116,6 +123,39 @@ app.post('/orders', async (req, res) => {
 })
 
 
+app.post('/products', async (req, res) => {
+    const {name, category, amount, price} = req.body;
+
+    if (prisma.products.findMany({where: {name: name}})) {
+        return res.status(404).json({ error: 'That product is already here' });
+    }
+
+    const newProduct = await prisma.orders.create({
+        data: {
+            name,
+            category,
+            amount,
+            price
+        },
+    });
+
+    res.send(newProduct);
+})
+
+
+async function main() {
+    const relation = await prisma.ordersOfProducts.create({
+        data: {
+            orderId: 4,
+            productId: 1,
+            amount: 1
+        },
+    })
+    console.log(relation)
+}
+
+
+main()
 
 
 

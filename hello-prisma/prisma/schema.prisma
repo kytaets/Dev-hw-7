@@ -16,10 +16,9 @@ model Products {
   id       Int    @id @default(autoincrement())
   name     String @unique
   category String
-  amount   Int    @unique @default(0)
+  amount   Int    @default(0)
   price    Float  @default(0)
 
-  order            Orders[]
   OrdersOfProducts OrdersOfProducts[]
 }
 
@@ -52,7 +51,6 @@ model Orders {
   deliveryCost Float
   orderDate    DateTime @default(now())
 
-  product          Products[]
   OrdersOfProducts OrdersOfProducts[]
   employee         Employees          @relation(fields: [employeeId], references: [id])
   customer         Customers          @relation(fields: [customerId], references: [id])
@@ -66,6 +64,4 @@ model OrdersOfProducts {
 
   order   Orders   @relation(fields: [orderId], references: [id])
   product Products @relation(fields: [productId], references: [id])
-
-  @@unique([orderId, productId, amount])
 }
